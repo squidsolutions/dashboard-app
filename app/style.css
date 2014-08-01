@@ -1,0 +1,11 @@
+
+.sq-main {
+    display : none;
+}
+
+.sq-content {
+}
+
+#sq-startDate, #sq-endDate {
+	color: gray;
+}
