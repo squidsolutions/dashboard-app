@@ -1,0 +1,20 @@
+{{#if this}}
+<table class='sq-table'>
+    <thead>
+        <tr>
+            {{#cols}}<th>{{lname}}</th>{{/cols}}
+        </tr>
+    </thead>
+    <tbody>
+        {{#rows}}
+           <tr>
+               {{#v}}
+                  <td>{{this}}</td> 
+               {{/v}}
+           </tr>
+        {{/rows}}
+    </tbody>
+</table>
+{{else}}
+  No Data
+{{/if}}
