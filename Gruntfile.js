@@ -36,7 +36,7 @@ module.exports = function(grunt) {
             main : {
                 files : [ {
                     expand : true,
-                    src : [ "app/**", "*.html", "bower_components/jquery-ui/themes/ui-lightness/**"  ],
+                    src : [ "app/**", "*.html", "bower_components/jquery-ui/themes/ui-lightness/**",  "bower_components/bootstrap/dist/fonts/*" ],
                     dest : 'dist/',
                     rename : function(dest, src) {
                         return dest + src.replace(/\.template.html$/, ".html");

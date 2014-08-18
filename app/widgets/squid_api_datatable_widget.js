@@ -24,7 +24,8 @@
         },
 
         render : function() {
-            var jsonData = this.model.get("results");
+            var jsonData = this.model.toJSON();
+            jsonData.done = this.model.isDone();
             var tableContent = this.$el;
             var tableHTML = this.template(jsonData);
             tableContent.html(tableHTML);

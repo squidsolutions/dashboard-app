@@ -10,6 +10,8 @@ $( document ).ready(function() {
     
     var domainId = "usage";
     
+    //var defaultSelection = null;
+    
     var defaultSelection = {
             "facets" : [ {
                 "dimension" : {
@@ -21,7 +23,7 @@ $( document ).ready(function() {
                 },
                 "selectedItems" : [ {
                     "type" : "i",
-                    "lowerBound" : "2014-04-15T00:00:00.000Z",
+                    "lowerBound" : "2014-04-29T00:00:00.000Z",
                     "upperBound" : "2014-04-30T00:00:00.000Z"
                 } ]
             }, {
@@ -110,15 +112,41 @@ $( document ).ready(function() {
      * Controller part
      */
     
-    squid_api.model.login.on('change:login', function(model) {
-        // performed when login is updated
-        if (model.get("login")) {
-            // login ok
-            // compute the filters
-            squid_api.controller.facetjob.compute(filters);
-            // compute the analysis
+    // filters modal buttons
+    $("#modal3 .btn-primary").click(function() {
+        filtersView.applySelection();
+    });
+    $("#modal3 .btn-default").click(function() {
+        filtersView.cancelSelection();
+    });
+
+    // datepicker modal buttons
+    $("#modal2 .btn-primary").click(function() {
+        datePicker.applySelection();
+    });
+    $("#modal2 .btn-default").click(function() {
+        datePicker.cancelSelection();
+    });
+    
+    // check for new filter selection
+    filters.on('change:userSelection', function() {
+        squid_api.controller.facetjob.compute(filters, filters.get("userSelection"));
+    });
+    
+    // check for filters update
+    filters.on('change:selection', function(data) {
+        if (data.get("selection")) {
+            // launch the computations
             squid_api.controller.analysisjob.computeAnalysis(analysis, filters);
             squid_api.controller.analysisjob.computeAnalysis(totalAnalysis, filters);
+        }
+    });
+    
+    // check for login performed
+    squid_api.model.login.on('change:login', function(model) {
+        if (model.get("login")) {
+            // login ok, launch the filters computation
+            squid_api.controller.facetjob.compute(filters);
         }
     });
     
