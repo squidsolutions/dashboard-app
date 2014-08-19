@@ -1,12 +1,11 @@
 $( document ).ready(function() {
     
-    var analysis, totalAnalysis, filters, loginView, statusView, contentView, config, filtersView, datePicker, periodView, selectionView, dataTableView;
-    
-    config = {
-        "customerId" : null,
+    var analysis, totalAnalysis, filters, loginView, statusView, contentView, filtersView, datePicker, periodView, selectionView, dataTableView;
+
+    squid_api.setup({
         "clientId" : "local",
         "projectId" : "els_flow_1",
-    };
+    });
     
     var domainId = "usage";
     
@@ -16,7 +15,7 @@ $( document ).ready(function() {
             "facets" : [ {
                 "dimension" : {
                     "id" : {
-                        "projectId" : config.projectId,
+                        "projectId" : squid_api.projectId,
                         "domainId" : domainId,
                         "dimensionId" : "session_cre_dt"
                     }
@@ -29,7 +28,7 @@ $( document ).ready(function() {
             }, {
                 "dimension" : {
                     "id" : {
-                        "projectId" : config.projectId,
+                        "projectId" : squid_api.projectId,
                         "domainId" : domainId,
                         "dimensionId" : "usergroup"
                     }
@@ -43,18 +42,15 @@ $( document ).ready(function() {
     };
     
     analysis = new squid_api.controller.analysisjob.AnalysisModel();
-    analysis.setProjectId(config.projectId);
     analysis.setDomainIds([domainId]);
     analysis.setDimensionIds(["step0","step1","step2"]);
     analysis.setMetricIds(["count"]);
     
     totalAnalysis = new squid_api.controller.analysisjob.AnalysisModel();
-    totalAnalysis.setProjectId(config.projectId);
     totalAnalysis.setDomainIds([domainId]);
     totalAnalysis.setMetricIds(["count"]);
 
     filters = new squid_api.controller.facetjob.FiltersModel();
-    filters.setProjectId(config.projectId);
     filters.setDomainIds([domainId]);
     filters.set("selection" , defaultSelection);
     
@@ -74,8 +70,7 @@ $( document ).ready(function() {
     filtersView = new squid_api.view.FiltersView({
         model : filters,
         el : '#filters',
-        multiselectOptions : {nonSelectedText: 'ALL',maxHeight: 400, buttonClass: 'btn btn-link', enableFiltering: true, enableCaseInsensitiveFiltering: true},
-        booleanGroupName : "Goals",
+        booleanGroupName : "Goals"
     });
     filtersView.displayContinuous = false;
 
@@ -153,5 +148,5 @@ $( document ).ready(function() {
     /*
      * Start the App
      */
-    squid_api.init(config);
+    squid_api.init();
 });
