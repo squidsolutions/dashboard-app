@@ -1,6 +1,6 @@
 $( document ).ready(function() {
     
-    var analysis, totalAnalysis, filters, loginView, statusView, contentView, filtersView, datePicker, periodView, selectionView, dataTableView, totalKPIView;
+    var analysis, totalAnalysis, filters, loginView, statusView, contentView, filtersView, datePicker, periodView, selectionView, dataTableView, totalKPIView, flowChartView;
 
     squid_api.setup({
         "clientId" : "local",
@@ -45,6 +45,17 @@ $( document ).ready(function() {
     analysis.setDomainIds([domainId]);
     analysis.setDimensionIds(["origin", "step0","step1","step2"]);
     analysis.setMetricIds(["count", "withFTA"]);
+    analysis.set({
+        "selectedMetric" : {
+            "oid" : "count"
+        },
+        "primaryMetric" : {
+            "oid" : "count"
+        },
+        "secondaryMetric" : {
+            "oid" : "sum_fta"
+        }
+    });
     
     totalAnalysis = new squid_api.controller.analysisjob.AnalysisModel();
     totalAnalysis.setDomainIds([domainId]);
@@ -95,7 +106,8 @@ $( document ).ready(function() {
     
     dataTableView = new squid_api.view.DataTableView({
         el : $('#analysis'),
-        model : analysis
+        model : analysis,
+        maxRowsPerPage : 20
     });
     
     totalView = new squid_api.view.DataTableView({
@@ -107,6 +119,12 @@ $( document ).ready(function() {
         el : $('#totalKPI'),
         model : totalAnalysis,
         format : d3.format(",.1f")
+    });
+    
+    flowChartView = new squid_api.view.FlowChartView({
+        el : $('#flowchart'),
+        model : analysis,
+        filterModel : filters
     });
     
     /*

@@ -1,0 +1,61 @@
+<div style='width:{{width}};'>
+<table>
+<tr><td style='width:17px;'><div class="circle" style="border: 1px solid black;width:15px;height:15px;background:{{node.colorHtml}};"></div><td>&nbsp;{{node.fullname}}</td></tr>
+</table>
+<hr>
+{{#if endsNode}}
+<table>
+<tr><td><label>Input:</label></td><td style='padding-left:20px;text-align:right;'><span>{{percentTotal}}%</span></td></tr>
+</table>
+{{else}}
+<table>
+<tr><td><label>Input:</label></td><td style='padding-left:20px;text-align:right;'><span>{{percentTotal}}%</span></td><td style='padding-left:40px;text-align:right;'>Relative</td></tr>
+<tr><td><div><label>Go through:</label></td><td style='padding-left:20px;text-align:right;'><span>{{percentTotalGoThrough}}%</span></td><td style='padding-left:40px;text-align:right;'><span>{{percentGoThrough}}%</span></td>
+<td rowspan="2" style='padding-left:5px;'>
+{{#with piechart}}
+<div id="tipNode-viewport">
+<svg width="{{size}}" height="{{size}}">
+{{#if fullpie}}
+<circle cx="{{center}}" cy="{{center}}" r="{{r}}" stroke="#aaaaaa" stroke-width="1" fill="{{green}}" />
+{{else}}
+<!-- Pie chart -->
+<path d="M{{center}},{{center}} L{{startx}},{{starty}} A{{r}},{{r}} 0 {{first}},1 {{cos}},{{sin}} z"
+	style="fill:{{green}};
+		fill-opacity: 0.8;
+		stroke:#ffffff;
+		stroke-width: 1"/>
+<path d="M{{center}},{{center}} L{{cos}},{{sin}} A{{r}},{{r}} 0 {{second}},1 {{startx}},{{starty}} z"
+	style="fill:{{red}};
+		fill-opacity: 0.8;
+		stroke:#ffffff;
+		stroke-width: 1"/>
+{{/if}}
+</svg>
+</div>
+{{/with}}
+
+</td>
+</tr>
+<tr><td><div><label>Exit:</label></td><td style='padding-left:20px;text-align:right;'><span>{{percentTotalExit}}%</span></td><td style='padding-left:40px;text-align:right;'><span>{{percentExit}}%</span></td></tr>
+</table>
+{{/if}} 
+
+{{#if secondaryRate}}
+<hr>
+<table>
+<tr></td><td style='width:17px;'><div class="circle" style="width:15px;height:15px;background:{{secondaryColor}};"></div></td><td style='text-align:right;'>&nbsp;{{secondaryRate}}%&nbsp;<label>{{secondaryDefinition}}</label></td></tr>
+</table>
+{{/if}}    
+
+{{#if mergeNode}}
+{{#with mergeNode}}
+<hr>
+<div>Details:</div><table>
+{{#each nodes}}
+<tr><td><li>{{fullname}}</li></td><td style='padding-left:20px;text-align:right;'>({{percentTotal}}%)</td></tr>
+{{/each}}
+{{#if moreNodes}}
+<tr><td><li>({{moreNodes}}) more...</li></td></tr>
+{{/if}}
+{{/with}}
+{{/if}}

@@ -9,3 +9,112 @@
 #sq-startDate, #sq-endDate {
 	color: gray;
 }
+
+
+/* D3 Sankey */
+
+.node rect {
+  cursor: move;
+  fill-opacity: .9;
+  shape-rendering: crispEdges;
+}
+
+.node text {
+  pointer-events: none;
+  text-shadow: 0 1px 0 #fff;
+}
+
+.link {
+  fill: none;
+  stroke: #000;
+}
+
+.link:hover {
+  stroke-opacity: .8;
+  stroke: #000;
+}
+
+/* END D3 Sankey */
+
+/* D3 TIP  */
+   
+   @-webkit-keyframes bounceIn {
+    0% {
+      opacity: 0;
+    }
+
+    70% {
+      opacity: 0;
+    }
+
+    100% {
+      opacity: 1
+    }
+  }
+
+  @keyframes bounceIn {
+    0% {
+      opacity: 0;
+    }
+
+    70% {
+      opacity: 0;
+    }
+
+    100% {
+      opacity: 1
+    }
+  }
+  
+  
+  .d3-tip.animate {
+    animation: bounceIn .7s linear;
+    -webkit-animation: bounceIn .7s linear;
+  }
+  
+
+.d3-tip {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: rgba(248, 248, 248, 1);
+  color: #222;
+  border-radius: 2px;
+  box-shadow: -10px 10px 5px rgba(100,100,100,0.6);
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 20px;
+  width: 100%;
+  line-height: 1;
+  color: rgba(248, 248, 248, 1);
+  position: absolute;
+  pointer-events: none;
+}
+
+/* Eastward tooltips */
+.d3-tip.e:after {
+  content: "\25C0";
+  margin: -8px 0 0 0;
+  top: 50%;
+  left: -12px;
+}
+
+.d3-tip.se:after {
+  content: "\25C0";
+  margin: -8px 0 0 0;
+  top: 20px;
+  left: -12px;
+}
+
+.d3-tip.ne:after {
+  content: "\25C0";
+  margin: -8px 0 0 0;
+  bottom: 20px;
+  left: -12px;
+}
+
+/* END D3 TIP  */
