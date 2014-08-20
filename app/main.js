@@ -43,7 +43,7 @@ $( document ).ready(function() {
     
     analysis = new squid_api.controller.analysisjob.AnalysisModel();
     analysis.setDomainIds([domainId]);
-    analysis.setDimensionIds(["step0","step1","step2"]);
+    analysis.setDimensionIds(["origin", "step0","step1","step2"]);
     analysis.setMetricIds(["count", "withFTA"]);
     
     totalAnalysis = new squid_api.controller.analysisjob.AnalysisModel();
