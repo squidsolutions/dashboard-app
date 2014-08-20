@@ -1,6 +1,6 @@
 $( document ).ready(function() {
     
-    var analysis, totalAnalysis, filters, loginView, statusView, contentView, filtersView, datePicker, periodView, selectionView, dataTableView;
+    var analysis, totalAnalysis, filters, loginView, statusView, contentView, filtersView, datePicker, periodView, selectionView, dataTableView, totalKPIView;
 
     squid_api.setup({
         "clientId" : "local",
@@ -44,7 +44,7 @@ $( document ).ready(function() {
     analysis = new squid_api.controller.analysisjob.AnalysisModel();
     analysis.setDomainIds([domainId]);
     analysis.setDimensionIds(["step0","step1","step2"]);
-    analysis.setMetricIds(["count"]);
+    analysis.setMetricIds(["count", "withFTA"]);
     
     totalAnalysis = new squid_api.controller.analysisjob.AnalysisModel();
     totalAnalysis.setDomainIds([domainId]);
@@ -101,6 +101,12 @@ $( document ).ready(function() {
     totalView = new squid_api.view.DataTableView({
         el : $('#total'),
         model : totalAnalysis
+    });
+    
+    totalKPIView = new squid_api.view.KPIView({
+        el : $('#totalKPI'),
+        model : totalAnalysis,
+        format : d3.format(",.1f")
     });
     
     /*
