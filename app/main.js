@@ -22,8 +22,8 @@ $( document ).ready(function() {
                 },
                 "selectedItems" : [ {
                     "type" : "i",
-                    "lowerBound" : "2014-04-29T00:00:00.000Z",
-                    "upperBound" : "2014-04-30T00:00:00.000Z"
+                    "lowerBound" : "2014-07-16T00:00:00.000Z",
+                    "upperBound" : "2014-07-31T00:00:00.000Z"
                 } ]
             }, {
                 "dimension" : {
@@ -48,7 +48,7 @@ $( document ).ready(function() {
     
     totalAnalysis = new squid_api.controller.analysisjob.AnalysisModel();
     totalAnalysis.setDomainIds([domainId]);
-    totalAnalysis.setMetricIds(["count"]);
+    totalAnalysis.setMetricIds(["count", "withFTA"]);
 
     filters = new squid_api.controller.facetjob.FiltersModel();
     filters.setDomainIds([domainId]);
