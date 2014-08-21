@@ -130,7 +130,7 @@
                     });
                 }
                 this.$el.find(".sq-loading").hide();
-                var html = templateHeader({"linksValuesThreshold" : this.linksValuesThreshold, "headerCols" : headerCols, "sankeyWidth" : (headerColsCnt)*headerWidth, "width" : headerWidth});
+                var html = templateHeader({"headerCols" : headerCols, "width" : headerWidth});
                 this.$el.find(".sq-header").html(html);
 
                 // energy

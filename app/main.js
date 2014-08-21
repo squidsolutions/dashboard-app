@@ -1,6 +1,6 @@
 $( document ).ready(function() {
     
-    var analysis, totalAnalysis, filters, loginView, statusView, contentView, filtersView, datePicker, periodView, selectionView, dataTableView, totalKPIView, flowChartView;
+    var analysis, totalAnalysis, filters, loginView, statusView, contentView, filtersView, datePicker, periodView, selectionView, dataTableView, totalKPIView, flowChartView, originView;
 
     squid_api.setup({
         "clientId" : "local",
@@ -120,6 +120,11 @@ $( document ).ready(function() {
         model : totalAnalysis,
         format : d3.format(",.1f")
     });
+    
+    originView = new squid_api.view.DimensionSelector({
+        el : $('#origin'),
+        model : analysis
+    })
     
     flowChartView = new squid_api.view.FlowChartView({
         el : $('#flowchart'),
