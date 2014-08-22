@@ -40,6 +40,13 @@
             this.model = model;
             this.initialize();
         },
+        
+        events: {
+            "change": function(event) {
+                var oid = this.$el.find("select").val();
+                this.model.setDimensionId(oid);
+            }
+        },
 
         render: function() {
             // display

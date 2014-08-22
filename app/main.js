@@ -159,9 +159,13 @@ $( document ).ready(function() {
     
     // check for filters update
     filters.on('change:selection', function(data) {
-        // launch the computations
         squid_api.controller.analysisjob.computeAnalysis(analysis, filters);
         squid_api.controller.analysisjob.computeAnalysis(totalAnalysis, filters);
+    });
+    
+    // check for analysis origin update
+    analysis.on('change:dimensions', function(data) {
+        squid_api.controller.analysisjob.computeAnalysis(analysis, filters);
     });
     
     // check for login performed
