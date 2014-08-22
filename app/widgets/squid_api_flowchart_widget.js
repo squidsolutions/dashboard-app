@@ -18,6 +18,8 @@
         filterModel : null,
 
         displayOptionModel : null,
+        
+        analyses : null,
 
         initialize : function(options) {
             if (this.model) {
@@ -61,9 +63,10 @@
                     // single analysis
                     analyses = [this.model];
                 }
+                this.analyses = analyses;
                 var energy = null;
-                for (var i=0;i<analyses.length;i++) {
-                    var result = analyses[i].get("results");
+                for (var i=0;i<this.analyses.length;i++) {
+                    var result = this.analyses[i].get("results");
                     if (result) {
                         energy = energy?this.buildEnergyDataSet(result,energy):this.buildEnergyDataSet(result);
                     } else {
@@ -503,7 +506,7 @@
                     var col = this.energyData.cols[d.step];
                     var value = d.name;
                     var dimension = 
-                    {"id" : {"domainId" : this.model.get("analyses")[0].get("domains")[0].domainId, "dimensionId" : col.id},
+                    {"id" : {"domainId" : this.analyses[0].get("domains")[0].domainId, "dimensionId" : col.id},
                             "name" : col.lname};
                     this.filterModel.addSelection(dimension,value);
                     this.filterModel.trigger("change:userSelection");
@@ -520,7 +523,7 @@
                     var col = this.energyData.cols[source.step];
                     var value = source.name;
                     var dimension = 
-                    {"id" : {"domainId" : this.model.get("analyses")[0].get("domains")[0].domainId, "dimensionId" : col.id},
+                    {"id" : {"domainId" : this.analyses[0].get("domains")[0].domainId, "dimensionId" : col.id},
                             "name" : col.lname};
                     this.filterModel.addSelection(dimension,value);
                     update = true;
@@ -529,7 +532,7 @@
                     var col = this.energyData.cols[target.step];
                     var value = target.name;
                     var dimension = 
-                    {"id" : {"domainId" : this.model.get("analyses")[0].get("domains")[0].domainId, "dimensionId" : col.id},
+                    {"id" : {"domainId" : this.analyses[0].get("domains")[0].domainId, "dimensionId" : col.id},
                             "name" : col.lname};
                     this.filterModel.addSelection(dimension,value);
                     update = true;
