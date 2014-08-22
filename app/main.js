@@ -168,12 +168,10 @@ $( document ).ready(function() {
         squid_api.controller.analysisjob.computeAnalysis(analysis, filters);
     });
     
-    // check for login performed
-    squid_api.model.login.on('change:login', function(model) {
-        if (model.get("login")) {
-            // login ok, launch the filters computation
-            squid_api.controller.facetjob.compute(filters);
-        }
+    // check for project init performed
+    squid_api.model.project.on('change', function(model) {
+        // launch the filters computation
+        squid_api.controller.facetjob.compute(filters);
     });
     
     /*

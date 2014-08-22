@@ -14,26 +14,20 @@
                 this.template = template;
             }
             var me = this;
-            squid_api.model.login.on('change:login', function(model) {
-                if (model.get("login")) {
-                    // get the dimensions from the analysis
-                    var domainId = me.model.get("domains")[0];
-                    var dims = new squid_api.model.DimensionCollection([],{"parentId" : domainId});
-                    dims.fetch({
-                        success : function(model, response, options) {
-                            // filter categorical dimensions
-                            for (var i=0; i<model.models.length; i++){
-                                var dim = model.models[i];
-                                if (dim.get("type") == "CATEGORICAL") {
-                                    me.dimensions.push(dim);
-                                }
-                            }
-                            me.render();
-                        }
-                    });
+            squid_api.model.project.on('change', function(model) {
+                // get the dimensions from the api
+                var domain = squid_api.utils.find(model.get("domains"), "oid", me.model.get("domains")[0].domainId);
+                var dims = domain.dimensions;
+                
+                // filter categorical dimensions
+                for (var i=0; i<dims.length; i++){
+                    var dim = dims[i];
+                    if (dim.type == "CATEGORICAL") {
+                        me.dimensions.push(dim);
+                    }
                 }
+                me.render();
             });
-
         },
 
         setModel: function(model) {
@@ -54,10 +48,10 @@
             for (var i=0; i<this.dimensions.length; i++) {
                 var dim = this.dimensions[i];
                 var selected = false;
-                if (dim.get("oid") == this.model.get("dimensions")[0].dimensionId) {
+                if (dim.oid == this.model.get("dimensions")[0].dimensionId) {
                     selected = true;
                 }
-                var option = {"label" : dim.get("name"), "value" : dim.get("oid"), "selected" : selected};
+                var option = {"label" : dim.name, "value" : dim.oid, "selected" : selected};
                 jsonData.options.push(option);
             }
             var html = this.template(jsonData);

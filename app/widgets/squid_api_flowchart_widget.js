@@ -136,6 +136,21 @@
                 var html = templateHeader({"headerCols" : headerCols, "width" : headerWidth});
                 this.$el.find(".sq-header").html(html);
 
+                // add the origin view
+                var domains = squid_api.model.project.get("domains");
+                for (var domainIdx = 0; domainIdx < domains.length; domainIdx++) {
+                    var dom = domains[domainIdx];
+                    if (dom.oid == this.analyses[0].get("domains")[0].domainId) {
+                        var dimensions = dom.dimensions;
+                        for (var dimensionIdx = 0; dimensionIdx < dimensions.length; dimensionIdx++) {
+                            var dim = dimensions[dimensionIdx];
+                            if (dim.oid == this.analyses[0].get("dimensions")[0].dimensionId) {
+                                this.$el.find('#sq-origin').html(dim.name);
+                            }
+                        }
+                    }
+                }           
+
                 // energy
                 energy = this.applyThreshold(this.energyData,this.model.get("threshold"));
 
