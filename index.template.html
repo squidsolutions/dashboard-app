@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Squid Dashboard App</title>
 	<link rel="stylesheet" type="text/css" href="app/style.css">
-
-    <link href="assets/css/bootstrap-reset.css" rel="stylesheet">
     
     <link href="bower_components/jquery-ui/themes/ui-lightness/jquery-ui.min.css" rel="stylesheet">
 
@@ -30,13 +28,8 @@
 		</div>
 		<div class="row">
 			<div class="col-md-3">
-				<div id="date">
-					<h2>Period</h2>
-					From <span id="sq-startDate"></span> To <span id="sq-endDate"></span>
-					<a href="#" class="prevent-default" data-toggle="collapse" data-parent="#accordion" data-target="#modal2" data-clavier="true">
-						Change
-					</a>
-		        </div>
+				<h2>Period</h2>
+				<div id="date"></div>
 		    </div>
 		    <div class="col-md-2">
 				<h2>Origin</h2>
@@ -45,52 +38,39 @@
 			<div class="col-md-4">
 				<h2>Filters</h2>
 				<div id='selection'></div>
-				<a href="#" class="prevent-default" data-toggle="collapse" data-parent="#accordion" data-target="#modal3" data-clavier="true">
+				<a href="#" class="prevent-default" data-toggle="collapse" data-target="#modal3" data-clavier="true">
 						Change
 				</a>
 			</div>
 			<div class="col-md-3">
 				<h2>Total</h2>
-				<div id='total'></div>
 				<div id='totalKPI'></div>
+				<div id='total'></div>
 			</div>
 		</div>
-		<div class="accordion" id="accordion">
-			<!-- date picker -->
-	        <div class="collapse" id="modal2" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
-				<div class="panel panel-default filter-panel">
-		  			<div class="panel-heading">
-						<button type="button" class="close" data-toggle="collapse" data-target="#modal2" data-clavier="true" aria-hidden="true"><i class="fa fa-chevron-up"></i></button>
-						<h4 class="panel-title" id="myModalLabel">Period</h4>
-		  			</div>
-		  			<div class="panel-body" id="period">
-						<div id="date-picker"></div>				
-		  			</div>
-		  			<div class="panel-footer">
-	      				<button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#modal2" data-clavier="true">Apply</button>
-						<button type="button" class="btn btn-default" data-toggle="collapse" data-target="#modal2" data-clavier="true">Cancel</button>
-		  			</div>
-				</div>
+		
+		<!-- date picker -->
+        <div class="collapse" id="picker"></div>
+		<!-- /date picker -->
+		
+		<!-- filters -->
+		<div class="collapse" id="modal3" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="panel panel-default filter-panel">
+	  			<div class="panel-heading">
+					<button type="button" class="close" data-toggle="collapse" data-target="#modal3" data-clavier="true" aria-hidden="true"><i class="fa fa-chevron-up"></i></button>
+					<h4 class="panel-title" id="myModalLabel">Filters</h4>
+	  			</div>
+	  			<div class="panel-body">
+					<div id="filters"></div>				
+	  			</div>
+	  			<div class="panel-footer">
+      				<button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#modal3" data-clavier="true">Apply</button>
+					<button type="button" class="btn btn-default" data-toggle="collapse" data-target="#modal3" data-clavier="true">Cancel</button>
+	  			</div>
 			</div>
-			<!-- /date picker -->
-			<!-- filters -->
-			<div class="collapse" id="modal3" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
-				<div class="panel panel-default filter-panel">
-		  			<div class="panel-heading">
-						<button type="button" class="close" data-toggle="collapse" data-target="#modal3" data-clavier="true" aria-hidden="true"><i class="fa fa-chevron-up"></i></button>
-						<h4 class="panel-title" id="myModalLabel">Filters</h4>
-		  			</div>
-		  			<div class="panel-body">
-						<div id="filters"></div>				
-		  			</div>
-		  			<div class="panel-footer">
-	      				<button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#modal3" data-clavier="true">Apply</button>
-						<button type="button" class="btn btn-default" data-toggle="collapse" data-target="#modal3" data-clavier="true">Cancel</button>
-		  			</div>
-				</div>
-			</div>
-			<!-- /filters -->
 		</div>
+		<!-- /filters -->
+
 		<div class="row">
 			<div class="col-md-12">
 				<h2>Results</h2>
