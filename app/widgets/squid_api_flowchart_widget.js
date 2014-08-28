@@ -9,7 +9,9 @@
 
     var View = Backbone.View.extend( {
 
-        titleMaxChars : 30, // the maximum number of characters for a node title
+        titleMaxChars : 30, /* the maximum number of characters for a node title */
+        
+        thresholdValue : 42, /* don't ask why */
 
         sankeyD3 : null,
 
@@ -23,9 +25,13 @@
 
         initialize : function(options) {
             if (this.model) {
+                this.model.set({"threshold":this.thresholdValue});
                 this.model.on('change:status', this.update, this);
                 this.model.on('change:error', this.render, this);
-                this.model.on('change:threshold', function() {this.render(false)}, this);
+                this.model.on('change:threshold', this.updateThreshold, this);
+                this.model.on('change:threshold', function() {
+                        this.render(false);
+                    }, this);
             }
             if (options.filterModel) {
                 this.filterModel = options.filterModel;
@@ -56,6 +62,21 @@
         },
 
         events: {
+            "input .threshold-selector": function(event) {
+                if (this.model) {
+                        if (this.model.get("threshold") != event.target.value) {
+                                this.thresholdValue = event.target.value;
+                                this.model.set({"threshold" : this.thresholdValue});
+                        }
+                }
+            }
+        },
+        
+        updateThreshold : function() {
+            this.thresholdValue = this.model.get("threshold");
+            //this.render();// not good, break continuous update
+            //TODO: update the threshold-selector value
+            this.$el.find(".threshold-selector").val(this.thresholdValue);
         },
 
         update : function() {
@@ -243,7 +264,7 @@
                 } else if (column.role == "DATA") {
                     energy.metrics.push({"metadata":column,"index":i});
                     // support for legacy model
-                    if (this.model.get("selectedMetric")) {
+                    if (this.model.get("primaryMetric")) {
                         if (column.id==this.model.get("selectedMetric").oid) {
                             selectedMetricId = i;
                         }
@@ -254,11 +275,12 @@
                             secondaryMetricId = i;
                         }
                     } else {
-                        if (!selectedMetricId) {
-                            selectedMetricId = i+1;
+                        // by default select the last metric
+                        if (!primaryMetricId) {
                             primaryMetricId = i;
                             secondaryMetricId = i+1;
                         }
+                        selectedMetricId = i;
                     }
                 }
             }

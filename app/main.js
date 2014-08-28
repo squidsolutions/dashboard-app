@@ -49,11 +49,13 @@ $( document ).ready(function() {
         el : '#selection',
     });
     
+    /*
     var dataTableView = new squid_api.view.DataTableView({
         el : '#analysis',
         model : analysis,
         maxRowsPerPage : 20
     });
+    */
     
     var totalView = new squid_api.view.DataTableView({
         el : '#total',
