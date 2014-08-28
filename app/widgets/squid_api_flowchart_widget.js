@@ -32,8 +32,11 @@
             }
             if (options.displayOptionModel) {
                 this.displayOptionModel = options.displayOptionModel;
-                this.displayOptionModel.on('change:displayScaleForNodes', function() {this.render(true);}, this);
+            } else {
+                var DisplayOptionModel = Backbone.Model.extend();
+                this.displayOptionModel = new DisplayOptionModel({displayScaleForNodes : true});
             }
+            this.displayOptionModel.on('change:displayScaleForNodes', function() {this.render(true);}, this);
             $(window).on("resize", _.bind(this.resize(),this));
         },
 
@@ -239,14 +242,23 @@
                     }
                 } else if (column.role == "DATA") {
                     energy.metrics.push({"metadata":column,"index":i});
-                    if (column.id==this.model.get("selectedMetric").oid) {
-                        selectedMetricId = i;
-                    }
-                    if (column.id==this.model.get("primaryMetric").oid) {
-                        primaryMetricId = i;
-                    }
-                    if (column.id==this.model.get("secondaryMetric").oid) {
-                        secondaryMetricId = i;
+                    // support for legacy model
+                    if (this.model.get("selectedMetric")) {
+                        if (column.id==this.model.get("selectedMetric").oid) {
+                            selectedMetricId = i;
+                        }
+                        if (column.id==this.model.get("primaryMetric").oid) {
+                            primaryMetricId = i;
+                        }
+                        if (column.id==this.model.get("secondaryMetric").oid) {
+                            secondaryMetricId = i;
+                        }
+                    } else {
+                        if (!selectedMetricId) {
+                            selectedMetricId = i+1;
+                            primaryMetricId = i;
+                            secondaryMetricId = i+1;
+                        }
                     }
                 }
             }
