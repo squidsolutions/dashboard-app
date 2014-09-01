@@ -79,14 +79,6 @@ $( document ).ready(function() {
      * Controller part
      */
     
-    // filters modal buttons
-    $("#modal3 .btn-primary").click(function() {
-        filtersView.applySelection();
-    });
-    $("#modal3 .btn-default").click(function() {
-        filtersView.cancelSelection();
-    });
-    
     // check for filters update
     squid_api.model.filters.on('change:selection', function(data) {
         squid_api.controller.analysisjob.compute(analysis);
