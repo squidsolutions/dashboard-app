@@ -33,10 +33,10 @@ $( document ).ready(function() {
         el : '#status'
     });
 
-    var filtersView = new squid_api.view.FiltersView({
-        el : '#filters',
-        booleanGroupName : "Goals",
-        displayContinuous : false
+    var filtersView = new squid_api.view.FiltersSelectionView({
+        el : '#selection',
+        filtersEl : $('#filters'),
+        booleanGroupName : "Goals"
     });
 
     var periodView = new squid_api.view.PeriodSelectionView({
@@ -45,10 +45,6 @@ $( document ).ready(function() {
         format : d3.time.format("%Y-%m-%d")
     });
 
-    var selectionView = new squid_api.view.SelectionView({
-        el : '#selection',
-    });
-    
     /*
     var dataTableView = new squid_api.view.DataTableView({
         el : '#analysis',
