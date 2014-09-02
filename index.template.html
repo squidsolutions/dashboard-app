@@ -3,83 +3,72 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Squid JSSDK base App</title>
+	<title>Squid Dashboard App</title>
 	<link rel="stylesheet" type="text/css" href="app/style.css">
-
-	<link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet">
-    <link href="assets/css/bootstrap-reset.css" rel="stylesheet">
     
     <link href="bower_components/jquery-ui/themes/ui-lightness/jquery-ui.min.css" rel="stylesheet">
-    <link href="bower_components/bootstrap-multiselect/css/bootstrap-multiselect.css" rel="stylesheet"/>
 
+	<!-- bower:css -->
+  	<!-- endbower -->
+  
 	<!-- bower:js -->
 	<!-- endbower -->
+	
 	<script src="main.js"></script>
 </head>
 <body>
 	<div class="container" id="main">
 		<div class="row">
-			<div class="col-md-10">
+			<div class="col-md-9">
 				<div id="status"></div>
 			</div>
-			<div class="col-md-2">
+			<div class="col-md-3">
 				<div id="login"></div>
 			</div>
 		</div>
 		<div class="row">
 			<div class="col-md-3">
-				<div id="date">
-					<h2>Period</h2>
-					From <span id="sq-startDate"></span> To <span id="sq-endDate"></span>
-					<a href="#" class="prevent-default" data-toggle="collapse" data-parent="#accordion" data-target="#modal2" data-clavier="true">
-						Change
-					</a>
-		        </div>
+				<h2>Period</h2>
+				<div id="date"></div>
 		    </div>
-			<div class="col-md-9">
+			<div class="col-md-5">
 				<h2>Filters</h2>
 				<div id='selection'></div>
-				<a href="#" class="prevent-default" data-toggle="collapse" data-parent="#accordion" data-target="#modal3" data-clavier="true">
-						Change
-				</a>
+			</div>
+			<div class="col-md-4">
+				<h2>Pivots</h2>
+				<label>Origin</label> <span id='origin'></span>
+		    </div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-12">
+		        <div class="collapse" id="picker"></div>
+				<div class="collapse" id="filters"></div>
 			</div>
 		</div>
-		<div class="accordion" id="accordion">
-			<!-- date picker -->
-	        <div class="collapse" id="modal2" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
-				<div class="panel panel-default filter-panel">
-		  			<div class="panel-heading">
-						<button type="button" class="close" data-toggle="collapse" data-target="#modal2" data-clavier="true" aria-hidden="true"><i class="fa fa-chevron-up"></i></button>
-						<h4 class="panel-title" id="myModalLabel">Period</h4>
-		  			</div>
-		  			<div class="panel-body" id="period">
-						<div id="date-picker"></div>				
-		  			</div>
-		  			<div class="panel-footer">
-	      				<button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#modal2" data-clavier="true">Apply</button>
-						<button type="button" class="btn btn-default" data-toggle="collapse" data-target="#modal2" data-clavier="true">Cancel</button>
-		  			</div>
-				</div>
+
+		<div class="row">
+			<div class="col-md-12">
+				<h2>Analyses</h2>
+				<div id='totalKPI'></div>
 			</div>
-			<!-- /date picker -->
-			<!-- filters -->
-			<div class="collapse" id="modal3" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
-				<div class="panel panel-default filter-panel">
-		  			<div class="panel-heading">
-						<button type="button" class="close" data-toggle="collapse" data-target="#modal3" data-clavier="true" aria-hidden="true"><i class="fa fa-chevron-up"></i></button>
-						<h4 class="panel-title" id="myModalLabel">Filters</h4>
-		  			</div>
-		  			<div class="panel-body">
-						<div id="filters"></div>				
-		  			</div>
-		  			<div class="panel-footer">
-	      				<button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#modal3" data-clavier="true">Apply</button>
-						<button type="button" class="btn btn-default" data-toggle="collapse" data-target="#modal3" data-clavier="true">Cancel</button>
-		  			</div>
-				</div>
-			</div>
-			<!-- /filters -->
 		</div>
+		
+		<div class="row">
+			<div class="col-md-12">
+				<h3>Flow Data</h3>
+				<div id='analysis'></div>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col-md-12">
+				<h3>Flow Chart</h3>
+				<div id='flowchart'></div>
+			</div>
+		</div>
+		
 	</div>
 </body>
 </html>
