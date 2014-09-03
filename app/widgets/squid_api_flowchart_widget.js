@@ -24,6 +24,10 @@
         analyses : null,
         
         rendering : false,
+        
+        primaryMetric : null,
+        
+        secondaryMetric : null,
 
         initialize : function(options) {
             if (this.model) {
@@ -284,6 +288,11 @@
                     }
                 }
             }
+            
+            // set the metrics
+            this.primaryMetric = datatable.cols[primaryMetricId];
+            this.secondaryMetric = datatable.cols[secondaryMetricId];
+            
             // create nodes and links to join consecutive steps
             for ( var i = 0; i < datatable.rows.length; i++) {
                 var row = datatable.rows[i].v;
@@ -756,10 +765,12 @@
                 data.percentTotalExit = fomatPercentSpecial(d.exitPercent);
                 data.percentGoThrough = fomatPercentSpecial((d.percentTotal-d.exitPercent)/d.percentTotal*100);
                 data.percentExit = fomatPercentSpecial(d.exitPercent/d.percentTotal*100);
-                data.secondaryKPI = "FTA";
+                data.secondaryKPI = me.secondaryMetric.oid;
                 data.secondaryRate = fomatPercentSpecial(d.secondary/d.primary*100);
                 data.secondaryColor = scaleColor(d);
-                data.secondaryDefinition = "Visits with FTAs";
+                data.secondaryDefinition = me.secondaryMetric.lname;
+                data.primaryDefinition = me.primaryMetric.lname;
+                
                 // pie chart
                 data.piechart = {};
                 data.piechart.r = 15;
@@ -857,10 +868,11 @@
                 data.percentRelativeSource = fomatPercentSpecial(d.percentTotal/d.source.percentTotal*100);
                 data.percentRelativeTarget = fomatPercentSpecial(d.percentTotal/d.target.percentTotal*100);
                 data.exitRate = fomatPercentSpecial(d.exit/d.value*100);
-                data.secondaryKPI = "FTA";
+                data.secondaryKPI = me.secondaryMetric.oid;
                 data.secondaryRate = fomatPercentSpecial(d.secondary/d.primary*100);
                 data.secondaryColor = scaleColor(d);
-                data.secondaryDefinition = "Visits with FTAs";
+                data.secondaryDefinition = me.secondaryMetric.lname;
+                data.primaryDefinition = me.primaryMetric.lname;
                 return templateTipLink(data);
             }
             if (this.tipLink) {
