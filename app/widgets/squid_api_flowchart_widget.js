@@ -22,13 +22,14 @@
         displayOptionModel : null,
         
         analyses : null,
+        
+        rendering : false,
 
         initialize : function(options) {
             if (this.model) {
                 this.model.set({"threshold":this.thresholdValue});
                 this.model.on('change:status', this.update, this);
                 this.model.on('change:error', this.render, this);
-                this.model.on('change:threshold', this.updateThreshold, this);
                 this.model.on('change:threshold', function() {
                         this.render(false);
                     }, this);
@@ -64,19 +65,13 @@
         events: {
             "input .threshold-selector": function(event) {
                 if (this.model) {
-                        if (this.model.get("threshold") != event.target.value) {
-                                this.thresholdValue = event.target.value;
-                                this.model.set({"threshold" : this.thresholdValue});
-                        }
+                    if (!this.rendering) {
+                        this.model.set({"threshold" : event.target.value});
+                    } else {
+                        this.$el.find(".threshold-selector").val(this.thresholdValue);
+                    }
                 }
             }
-        },
-        
-        updateThreshold : function() {
-            this.thresholdValue = this.model.get("threshold");
-            //this.render();// not good, break continuous update
-            //TODO: update the threshold-selector value
-            this.$el.find(".threshold-selector").val(this.thresholdValue);
         },
 
         update : function() {
@@ -115,6 +110,10 @@
         },
 
         render : function(slowmo) {
+            
+            this.rendering = true;
+            this.thresholdValue = this.model.get("threshold");
+
             windowHeight = $(window).height();
             if (windowHeight<600) {
                 windowHeight=600;
@@ -182,16 +181,17 @@
                 var diagramPort = this.$el.find(".sq-diagram");
                 var headerPort = this.$el.find(".sq-header");
                 sankeyHeight = sankeyHeight - headerPort.height();
-
+       
                 if (!this.sankeyD3) {
                     this.sankeyD3 = this.buildSankey(diagramPort.get(0), energy, this.energyData.cols[this.energyData.cols.length-1], sankeyWidth, sankeyHeight, headerWidth);
                 }
-                this.updateSankey(diagramPort.get(0), this.sankeyD3, energy, sankeyWidth, sankeyHeight, headerWidth, slowmo);
+                this.updateSankey(diagramPort.get(0), this.sankeyD3, energy, sankeyWidth, sankeyHeight, headerWidth, slowmo);   
 
                 this.$el.find(".sq-content").show();
                 this.$el.find(".sq-wait").hide();
                 this.$el.find(".sq-error").hide();
             }
+            this.rendering = false;
             return this;
         },
 
@@ -738,13 +738,13 @@
             .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
             .select("rect")
             .attr("height", function(d) { return d.dy; })
-            .style("fill", nodeColor)//colorscale(d.secondary/d.primary*100);})
+            .style("fill", nodeColor)
             ;
 
             nodedata.select("text")
             .transition().duration(duration)
             .attr("y", function(d) { return d.dy / 2; })
-            .attr("dy", ".35em")
+            .attr("dy", ".35em");
 
             var tipNodeRenderHtml = function(d) {
                 var data = {"width":headerWidth-15};
