@@ -850,32 +850,6 @@
             .attr("height", function(d) { return 0; });
             trans.transition().remove();
 
-            // for each node with "exit" classname, build a red stripe to indicate the traffic exit
-            var exitValue = function(node) {
-                var outboundTraffic = node.output;
-                var inboundTraffic = node.input;
-                return Math.abs(outboundTraffic - inboundTraffic);
-            };
-
-            var exitHeight = function(node, h) {
-                var nodeV = node.value;
-                var exitV = exitValue(node);
-                return (nodeV !== 0 && typeof nodeV !== undefined) ? h * exitV / nodeV : 0;
-            };
-
-            svg.selectAll(".exit").append("rect")
-            .attr("height", function(d, i) {
-                return exitHeight(d, d.dy);
-            })
-            .attr("width", sankey.nodeWidth() / 2)
-            .attr("transform", function(d, i) { 
-                var h = exitHeight(d, d.dy);
-                var yyy = (d.dy - h);
-                var xxx = sankey.nodeWidth();
-                return "translate(" + xxx + ", " + yyy  + ")";
-            })
-            .style("fill", function(d) { return d3.rgb("red").brighter(2); });
-
             var tipLinkRenderHtml = function(d) {
                 var data = {"width":headerWidth-15,"percentTotal":fomatPercentSpecial(d.percentTotal)};
                 data.source = d.source;
