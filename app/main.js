@@ -2,13 +2,13 @@ $( document ).ready(function() {
 
     squid_api.setup({
         "clientId" : "local",
-        "projectId" : "els_flow_1",
+        "projectId" : "squidflow",
         "domainId" : "usage",
         "selection" : {
             "date" : {
                 "dimensionId" : "session_cre_dt",
-                "lowerBound" : "2014-07-16",
-                "upperBound" : "2014-07-31"
+                "lowerBound" : "2014-04-01",
+                "upperBound" : "2014-04-15"
             }
         }
     });
@@ -35,8 +35,7 @@ $( document ).ready(function() {
 
     var filtersView = new squid_api.view.FiltersSelectionView({
         el : '#selection',
-        filtersEl : $('#filters'),
-        booleanGroupName : "Goals"
+        filtersEl : $('#filters')
     });
 
     var periodView = new squid_api.view.PeriodSelectionView({
