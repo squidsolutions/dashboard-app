@@ -4,8 +4,10 @@
             app.template.sankey, 
             app.template.sankeyHeader, 
             app.template.sankeyTipNode, 
-            app.template.sankeyTipLink);
-}(this, function (Backbone, template, templateHeader, templateTipNode, templateTipLink) {
+            app.template.sankeyTipLink,
+            app.template.sankeyColorScale,
+            app.template.sankeyColorScaleTip);
+}(this, function (Backbone, template, templateHeader, templateTipNode, templateTipLink, templateSankeyColorScale, templateSankeyColorScaleTip) {
 
     var View = Backbone.View.extend( {
 
@@ -661,23 +663,29 @@
             };
 
             // update secondary metric
-            var html = "<table class='color-scale' style='width:100%;'><tr>";
+            var colorScaleData = {"steps" : []};
             var step = -5;
             var defaultColor = "rgba(170,170,170,.5)";
-            for (var i = 100; i>=0; i+=step) { 
+            for (var i = 100; i>=0; i+=step) {
                 var selected = avg_secondary_rate<=i && avg_secondary_rate>i+step;
+                var styleClass = selected?"color-scale-selected":"color-scale";
                 var color = (displayScaleForNodes||selected)?colorscale(i):defaultColor;
-                html += "<td class='"+(selected?"color-scale-selected":"color-scale")+"' style='background-color:"+color+";";
+                var style = "background-color:"+color+";";
                 if (selected) {
-                    html += "border-color:"+color+";";
+                    style += " border-color:"+color+";";
                 }
-                html += "'>";
-                html += "<div class='color-scale' ";
-                html += "rel='tooltip' href='#' data-toggle='tooltip' data-placement='bottom' title data-original-title='"+(selected?fomatPercentSpecial(avg_secondary_rate):i)+"%'>&nbsp;</div></td>";
+                colorScaleData.steps.push({
+                    "class" : styleClass,
+                    "style" : style,
+                    "title" : (selected?fomatPercentSpecial(avg_secondary_rate):i)+"%"
+                });
             }
-            html += "</tr></table>";
-            $("#secondary-range").html(html);
-            $("#secondary-value").html("<a rel='tooltip' class='prevent-default' href='#' data-toggle='tooltip' data-placement='top' title data-original-title='Average % of selected visits with at least 1 FTA'>"+fomatPercentSpecial(avg_secondary_rate)+"% Visits with FTA</a>");
+            $("#secondary-range").html(templateSankeyColorScale(colorScaleData));
+            
+            var colorScaleTipData = {
+                    "avgSecondaryRate" : fomatPercentSpecial(avg_secondary_rate)
+            };
+            $("#secondary-value").html(templateSankeyColorScaleTip(colorScaleTipData));
             $("[rel=tooltip]").tooltip();
 
             var margin = {top: 1, right: headerWidth-17+5, bottom: 6, left: 0},
