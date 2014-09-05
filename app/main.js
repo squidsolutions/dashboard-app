@@ -10,7 +10,8 @@ $( document ).ready(function() {
                 "lowerBound" : "2014-04-01",
                 "upperBound" : "2014-04-15"
             }
-        }
+        },
+        "filtersDefaultEvents" : false
     });
     
     var analysis = new squid_api.controller.analysisjob.AnalysisModel();
@@ -66,7 +67,7 @@ $( document ).ready(function() {
     var originView = new squid_api.view.DimensionSelector({
         el : '#origin',
         model : analysis
-    })
+    });
     
     var flowChartView = new squid_api.view.FlowChartView({
         el : '#flowchart',
@@ -74,20 +75,46 @@ $( document ).ready(function() {
         filterModel : filters
     });
     
+    
     /*
      * Controller part
      */
     
     // check for filters update
     squid_api.model.filters.on('change:selection', function(data) {
-        squid_api.controller.analysisjob.compute(analysis);
-        squid_api.controller.analysisjob.compute(totalAnalysis);
+        // squid_api.controller.analysisjob.compute(analysis);
+        // squid_api.controller.analysisjob.compute(totalAnalysis);   
+    });
+    
+    squid_api.model.project.on('change', function() {
+        $.getJSON("../data/analysis-results.json", function(json) {
+            analysis.set("results",json);
+            analysis.set("status", "DONE");
+        });
     });
     
     // check for analysis origin update
-    analysis.on('change:dimensions', function(data) {
+    analysis.on('change:dimensions', function() {
         squid_api.controller.analysisjob.compute(analysis);
     });
+    
+    /*
+    analysis.on('change:results', function(data) {
+        var rows = analysis.get("results").rows.slice(0,10);
+        var tr = d3.select("#analysis").append("table").classed({"sq-table":true}).selectAll("tr")
+        .data(rows)
+        .enter().append("tr");
+
+        var td = tr.selectAll("td")
+        .data(function(d) { 
+            return d.v; 
+        })
+        .enter().append("td")
+        .text(function(d) { 
+            return d; 
+        });
+    });
+    */
     
     /*
      * Start the App
