@@ -63,7 +63,7 @@
                     window.clearTimeout(resizing);
                 }
                 this.resizing = window.setTimeout(_.bind(this.render,this), 100);
-            }
+            };
         },
 
         setModel : function(model) {
@@ -84,7 +84,7 @@
         },
 
         update : function() {
-            var energy, analyses;
+            var energy = null, analyses;
             if (this.model.isDone()) {
                 analyses = this.model.get("analyses");
                 if (!analyses) {
@@ -92,7 +92,6 @@
                     analyses = [this.model];
                 }
                 this.analyses = analyses;
-                var energy = null;
                 for (var i=0;i<this.analyses.length;i++) {
                     var result = this.analyses[i].get("results");
                     if (result) {
@@ -165,8 +164,7 @@
                     });
                 }
                 this.$el.find(".sq-loading").hide();
-                var html = templateHeader({"headerCols" : headerCols, "width" : headerWidth});
-                this.$el.find(".sq-header").html(html);
+                this.$el.find(".sq-header").html(templateHeader({"headerCols" : headerCols, "width" : headerWidth}));
 
                 // add the origin view
                 var domains = squid_api.model.project.get("domains");
@@ -299,14 +297,14 @@
             this.secondaryMetric = datatable.cols[secondaryMetricId];
             
             // create nodes and links to join consecutive steps
-            for ( var i = 0; i < datatable.rows.length; i++) {
-                var row = datatable.rows[i].v;
+            for ( var i2 = 0; i2 < datatable.rows.length; i2++) {
+                var row = datatable.rows[i2].v;
                 var rowMetric = parseFloat(row[selectedMetricId]);
                 var primaryMetric = primaryMetricId?parseFloat(row[primaryMetricId]):null;
                 var secondaryMetric = secondaryMetricId?parseFloat(row[secondaryMetricId]):null;
                 if (rowMetric > 0) {
-                    if (step0==0) {
-                        energy.subtotals[0] = rowMetric + (energy.subtotals[0]==null?0:energy.subtotals[0]);
+                    if (step0===0) {
+                        energy.subtotals[0] = rowMetric + (!energy.subtotals[0]?0:energy.subtotals[0]);
                         energy.stepStats[0].nodes++;
                         if (primaryMetric) energy.primaryTotal += primaryMetric;
                         if (secondaryMetric) energy.secondaryTotal += secondaryMetric;
@@ -316,9 +314,9 @@
                         // treat only DOMAIN columns
                         if (datatable.cols[j].role == "DOMAIN") {
                             var targetName = row[j];
-                            if ((targetName != null) && (targetName != "")) {
+                            if ((targetName) && (targetName !== "")) {
                                 var target = getNode(targetName, j);
-                                energy.subtotals[step0+j] = rowMetric + (energy.subtotals[step0+j]==null?0:energy.subtotals[step0+j]);
+                                energy.subtotals[step0+j] = rowMetric + (!energy.subtotals[step0+j]?0:energy.subtotals[step0+j]);
                                 if (j >= 0) {
                                     var sourceName = row[j - 1];
                                     var source = getNode(sourceName, j - 1);
@@ -354,12 +352,13 @@
                                     target.value = Math.max(target.input,target.output);
                                     source.exit = source.input>0?source.input - source.output:0;
                                     target.exit = target.input>0?target.input - target.output:0;
+                                    
                                     if (primaryMetric) {
-                                        if (source.step==0) source.primary += primaryMetric;
+                                        if (source.step===0) source.primary += primaryMetric;
                                         target.primary += primaryMetric;
                                     }
                                     if (secondaryMetric) {
-                                        if (source.step==0) source.secondary += secondaryMetric;
+                                        if (source.step===0) source.secondary += secondaryMetric;
                                         target.secondary += secondaryMetric;
                                     }
                                 }
@@ -420,7 +419,7 @@
                     if ((valuePercent < threshold || stats.count>15)) {// if under threshold, merge the node; if too many nodes, merge too
                         // get merge node for the node step
                         var mergeNode = mergeNodesByStep[node.step];
-                        if (mergeNode==null) {
+                        if (!mergeNode) {
                             // create a mergeNode for the given step
                             mergeNode = {
                                     "step" : node.step,
@@ -479,9 +478,9 @@
             });
 
             // rebuild the indexes
-            for (var i=0;i<new_nodes.length;i++) {
-                var node =new_nodes[i];
-                new_indexes[node.id] = i;// old node id => new position in new nodes
+            for (var i2=0;i2<new_nodes.length;i2++) {
+                var node2 =new_nodes[i2];
+                new_indexes[node2.id] = i2;// old node id => new position in new nodes
             }
 
             var links = energy.links;
@@ -489,18 +488,18 @@
             var new_links = [];// the updated list of links
 
             // now iter over the links and reindexe if source or target moved
-            for (var i=0; i< links.length; i++) {
+            for (var i3=0; i3< links.length; i3++) {
                 // check if need to merge the link
-                var link = links[i];
+                var link = links[i3];
                 var mergeSource = nodeToMerge[link.source];
                 var mergeTarget = nodeToMerge[link.target];
                 // compute new indexes
-                var sourceID = mergeSource!=null?mergeSource.id:link.source;
-                var targetID = mergeTarget!=null?mergeTarget.id:link.target;
+                var sourceID = mergeSource?mergeSource.id:link.source;
+                var targetID = mergeTarget?mergeTarget.id:link.target;
                 if (link.targetObject.step<energy.stepCount) {
-                    if (mergeSource!=null || mergeTarget!=null) {
+                    if (mergeSource || mergeTarget) {
                         var merge_link = merge_links[sourceID+":"+targetID];
-                        if (merge_link==null) {
+                        if (!merge_link) {
                             // create a link for merging
                             merge_link = {
                                     "source" : new_indexes[sourceID],
@@ -543,7 +542,7 @@
                 "stepCount" : energy.stepCount,
                 "primaryTotal" : energy.primaryTotal,
                 "secondaryTotal" : energy.secondaryTotal
-            };;
+            };
 
         },
 
@@ -592,12 +591,12 @@
                     update = true;
                 }
                 if (target.type!="merge") {
-                    var col = this.energyData.cols[target.step];
-                    var value = target.name;
-                    var dimension = 
-                    {"id" : {"domainId" : this.analyses[0].get("domains")[0].domainId, "dimensionId" : col.id},
-                            "name" : col.lname};
-                    this.filterModel.addSelection(dimension,value);
+                    var col2 = this.energyData.cols[target.step];
+                    var value2 = target.name;
+                    var dimension2 = 
+                    {"id" : {"domainId" : this.analyses[0].get("domains")[0].domainId, "dimensionId" : col2.id},
+                            "name" : col2.lname};
+                    this.filterModel.addSelection(dimension2,value2);
                     update = true;
                 }
                 if (update) {
@@ -655,11 +654,11 @@
             };
             var nodeColor =  function(d) {
                 return displayScaleForNodes?scaleColor(d):d.color;
-            }
+            };
             var linkDefaultColor = "#aaaaaa";
             var linkColor =  function(d) {
                 return displayScaleForNodes?scaleColor(d):linkDefaultColor;
-            }
+            };
 
             // update secondary metric
             var html = "<table class='color-scale' style='width:100%;'><tr>";
@@ -670,7 +669,7 @@
                 var color = (displayScaleForNodes||selected)?colorscale(i):defaultColor;
                 html += "<td class='"+(selected?"color-scale-selected":"color-scale")+"' style='background-color:"+color+";";
                 if (selected) {
-                    html += "border-color:"+color+";"
+                    html += "border-color:"+color+";";
                 }
                 html += "'>";
                 html += "<div class='color-scale' ";
@@ -772,7 +771,7 @@
                 var data = {"width":headerWidth-15};
                 //
                 data.node = d;
-                data.endsNode = (d.step==0) || (d.step==lastStep);
+                data.endsNode = (d.step===0) || (d.step==lastStep);
                 data.percentTotal = fomatPercentSpecial(d.percentTotal);
                 data.percentTotalGoThrough = fomatPercentSpecial(d.percentTotal-d.exitPercent);
                 data.percentTotalExit = fomatPercentSpecial(d.exitPercent);
@@ -792,7 +791,7 @@
                 data.piechart.startx = data.piechart.center-data.piechart.r;
                 data.piechart.starty = data.piechart.center;
                 var angular = d.exitPercent/d.percentTotal*2*Math.PI;
-                if (d.exitPercent==0) {
+                if (d.exitPercent===0) {
                     data.piechart.fullpie = true;
                     data.piechart.green = "green";
                 } else if (d.exitPercent==d.percentTotal) {
@@ -809,15 +808,15 @@
                 // merge node
                 if (d.type=="merge") {
                     data.mergeNode = {};
-                    data.mergeNode.nodes = new Array();
+                    data.mergeNode.nodes = [];
                     for (var i=0;i<d.nodes.length;i++) {
                         var node = d.nodes[i];
                         if (i>5 && d.nodes.length>6) {
                             data.mergeNode.moreNodes = (d.nodes.length-i);
                             break;
                         }
-                        var node = {"fullname":node.fullname,"percentTotal":fomatPercentSpecial(node.percentTotal)};
-                        data.mergeNode.nodes.push(node);
+                        var node2 = {"fullname":node.fullname,"percentTotal":fomatPercentSpecial(node.percentTotal)};
+                        data.mergeNode.nodes.push(node2);
                     }
                 }
                 return templateTipNode(data);
@@ -873,7 +872,7 @@
             .transition()
             .duration(duration)
             .attr("stroke-opacity", function(d) { return 0; })
-            .remove()
+            .remove();
 
             var tipLinkRenderHtml = function(d) {
                 var data = {"width":headerWidth-15,"percentTotal":fomatPercentSpecial(d.percentTotal)};
@@ -888,7 +887,7 @@
                 data.secondaryDefinition = me.secondaryMetric.lname;
                 data.primaryDefinition = me.primaryMetric.lname;
                 return templateTipLink(data);
-            }
+            };
             if (this.tipLink) {
                 this.tipLink.hide();
             }
@@ -909,7 +908,7 @@
             })
             .html(function(d) {
                 return tipLinkRenderHtml(d);
-            })
+            });
             this.tipLink = mytipLink;
             svg.call(mytipLink);
 
@@ -917,24 +916,32 @@
             .on('dblclick', mytipLink.hide)
             .on('click', mytipLink.show)// touch?
             .on('mouseover', function(d) {
-                var selection = d3.select(this);
-                selection.style("stroke", function(d) {
-                    var color = linkColor(d);
-                    return d3.rgb(color).darker(1);}).style("stroke-opacity",0.6);
-                mytipLink.attr('class', 'd3-tip animate').show(d);})
-                .on('mouseout', function(d) {
                     var selection = d3.select(this);
                     selection.style("stroke", function(d) {
-                        var color = linkColor(d);
-                        return color;}).style("stroke-opacity",function(d) {return d.percentTotal>10?.5:d.percentTotal>1?0.4:.1;});
-                    mytipLink.attr('class', 'd3-tip').show(d);mytipLink.hide();})
-                    ;
+                            var color = linkColor(d);
+                            return d3.rgb(color).darker(1);
+                        })
+                    .style("stroke-opacity",0.6);
+                    mytipLink.attr('class', 'd3-tip animate').show(d);
+                })
+            .on('mouseout', function(d) {
+                    var selection = d3.select(this);
+                    selection.style("stroke", function(d) {
+                            var color = linkColor(d);
+                            return color;
+                        })
+                    .style("stroke-opacity",function(d) {
+                            return d.percentTotal>10?0.5:d.percentTotal>1?0.4:0.1;
+                        });
+                    mytipLink.attr('class', 'd3-tip').show(d);
+                    mytipLink.hide();
+                });
 
             svg.selectAll(".link")
             .transition().duration(duration)
             .attr("d", path)
             .style("stroke-width", function(d) { return Math.max(1, d.dy); })
-            .style("stroke-opacity", function(d) {return d.percentTotal>10?.5:d.percentTotal>1?0.4:.1;})
+            .style("stroke-opacity", function(d) {return d.percentTotal>10?0.5:d.percentTotal>1?0.4:0.1;})
             .style("stroke", linkColor);
 
             linkdata.exit()
