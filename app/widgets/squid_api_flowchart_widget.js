@@ -21,6 +21,8 @@
 
         displayOptionModel : null,
         
+        thresholdModel : null,
+        
         analyses : null,
         
         rendering : false,
@@ -31,12 +33,8 @@
 
         initialize : function(options) {
             if (this.model) {
-                this.model.set({"threshold":this.thresholdValue});
                 this.model.on('change:status', this.update, this);
                 this.model.on('change:error', this.render, this);
-                this.model.on('change:threshold', function() {
-                        this.render(false);
-                    }, this);
             }
             if (options.filterModel) {
                 this.filterModel = options.filterModel;
@@ -48,6 +46,13 @@
                 this.displayOptionModel = new DisplayOptionModel({displayScaleForNodes : true});
             }
             this.displayOptionModel.on('change:displayScaleForNodes', function() {this.render(true);}, this);
+            
+            var ThresholdModel = Backbone.Model.extend();
+            this.thresholdModel = new ThresholdModel({"threshold" : this.thresholdValue});
+            this.thresholdModel.on('change:threshold', function() {
+                this.render(false);
+            }, this);
+            
             $(window).on("resize", _.bind(this.resize(),this));
         },
 
@@ -70,7 +75,7 @@
             "input .threshold-selector": function(event) {
                 if (this.model) {
                     if (!this.rendering) {
-                        this.model.set({"threshold" : event.target.value});
+                        this.thresholdModel.set({"threshold" : event.target.value});
                     } else {
                         this.$el.find(".threshold-selector").val(this.thresholdValue);
                     }
@@ -116,7 +121,7 @@
         render : function(slowmo) {
             
             this.rendering = true;
-            this.thresholdValue = this.model.get("threshold");
+            this.thresholdValue = this.thresholdModel.get("threshold");
 
             windowHeight = $(window).height();
             if (windowHeight<600) {
@@ -125,7 +130,7 @@
             var sankeyHeight = windowHeight-50-45-77-5;
             $(".sq-widget").css({"height":sankeyHeight});
             if (!this.sankeyD3) {
-                var html = template({"linksValuesThreshold" : this.model.get("threshold"), "headerCols" : [], "loading":true});
+                var html = template({"linksValuesThreshold" : this.thresholdModel.get("threshold"), "headerCols" : [], "loading":true});
                 this.$el.html(html);
             }
             if (!this.model.isDone()) {
@@ -179,7 +184,7 @@
                 }           
 
                 // energy
-                energy = this.applyThreshold(this.energyData,this.model.get("threshold"));
+                energy = this.applyThreshold(this.energyData,this.thresholdModel.get("threshold"));
 
                 // build the diagram
                 var diagramPort = this.$el.find(".sq-diagram");
@@ -701,26 +706,34 @@
             var link = linkdata.enter().append("path")
             .attr("class", "link")
             .style("stroke", function(d) { 
-                return linkDefaultColor;})
-                .style("stroke-opacity", function(d) {return "0.1";})
-                .attr("d", path)
-                .on("dblclick", function (d) {
+                    return linkDefaultColor;
+                })
+            .style("stroke-opacity", function(d) {
+                    return "0.1";
+                })
+            .attr("d", path)
+            .on("dblclick", function (d) {
                     me.dbclickLink(d);
                 })
-                .transition().duration(duration).style("stroke-width", function(d) { return Math.max(1, d.dy); })
-                .sort(function(a, b) { return b.dy - a.dy; });
+            .transition().duration(duration).style("stroke-width", function(d) { 
+                    return Math.max(1, d.dy); 
+                })
+            .sort(function(a, b) { 
+                    return b.dy - a.dy; 
+                });
 
             // enter node after to be on top
             var node = nodedata.enter().append("g")
             .attr("class","node")
             .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; })
             .on("dblclick", function (d) {
-                me.dbclickNode(d);
-            })
+                    me.dbclickNode(d);
+                })
             .call(d3.behavior.drag()
                     .origin(function(d) { return d; })
                     .on("dragstart", function() { this.parentNode.appendChild(this); })
-                    .on("drag", dragmove));
+                    .on("drag", dragmove)
+                );
 
             node.append("text")
             .attr("x", 15 + sankey.nodeWidth())
@@ -852,14 +865,15 @@
                     selection.style("fill", function(d) {
                         var color = nodeColor(d);
                         return color;});
-                    myTipNode.attr('class', 'd3-tip').show(d);myTipNode.hide();});
+                    myTipNode.attr('class', 'd3-tip').show(d);
+                    myTipNode.hide();});
 
             // exit
-            nodedata.exit().select("text").remove();
-            var trans = nodedata.exit().transition();
-            trans.duration(duration).select("rect")
-            .attr("height", function(d) { return 0; });
-            trans.transition().remove();
+            var exit = nodedata.exit()
+            .transition()
+            .duration(duration)
+            .attr("stroke-opacity", function(d) { return 0; })
+            .remove()
 
             var tipLinkRenderHtml = function(d) {
                 var data = {"width":headerWidth-15,"percentTotal":fomatPercentSpecial(d.percentTotal)};
@@ -923,9 +937,12 @@
             .style("stroke-opacity", function(d) {return d.percentTotal>10?.5:d.percentTotal>1?0.4:.1;})
             .style("stroke", linkColor);
 
-            var trans2 = linkdata.exit().transition();
-            trans2.duration(duration).style("stroke-width", 0);
-            trans2.transition().remove();
+            linkdata.exit()
+            .transition()
+            .duration(duration)
+            .style("stroke-width", 0)
+            .remove();
+
 
             function value(link) {
                 return link.value;
