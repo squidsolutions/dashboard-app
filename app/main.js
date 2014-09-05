@@ -2,15 +2,16 @@ $( document ).ready(function() {
 
     squid_api.setup({
         "clientId" : "local",
-        "projectId" : "els_flow_1",
+        "projectId" : "squidflow",
         "domainId" : "usage",
         "selection" : {
             "date" : {
                 "dimensionId" : "session_cre_dt",
-                "lowerBound" : "2014-07-16",
-                "upperBound" : "2014-07-31"
+                "lowerBound" : "2014-04-01",
+                "upperBound" : "2014-04-15"
             }
-        }
+        },
+        "filtersDefaultEvents" : false
     });
     
     var analysis = new squid_api.controller.analysisjob.AnalysisModel();
@@ -35,8 +36,7 @@ $( document ).ready(function() {
 
     var filtersView = new squid_api.view.FiltersSelectionView({
         el : '#selection',
-        filtersEl : $('#filters'),
-        booleanGroupName : "Goals"
+        filtersEl : $('#filters')
     });
 
     var periodView = new squid_api.view.PeriodSelectionView({
@@ -67,7 +67,7 @@ $( document ).ready(function() {
     var originView = new squid_api.view.DimensionSelector({
         el : '#origin',
         model : analysis
-    })
+    });
     
     var flowChartView = new squid_api.view.FlowChartView({
         el : '#flowchart',
@@ -75,28 +75,46 @@ $( document ).ready(function() {
         filterModel : filters
     });
     
+    
     /*
      * Controller part
      */
     
-    // filters modal buttons
-    $("#modal3 .btn-primary").click(function() {
-        filtersView.applySelection();
-    });
-    $("#modal3 .btn-default").click(function() {
-        filtersView.cancelSelection();
-    });
-    
     // check for filters update
     squid_api.model.filters.on('change:selection', function(data) {
-        squid_api.controller.analysisjob.compute(analysis);
-        squid_api.controller.analysisjob.compute(totalAnalysis);
+        // squid_api.controller.analysisjob.compute(analysis);
+        // squid_api.controller.analysisjob.compute(totalAnalysis);   
+    });
+    
+    squid_api.model.project.on('change', function() {
+        $.getJSON("../data/analysis-results.json", function(json) {
+            analysis.set("results",json);
+            analysis.set("status", "DONE");
+        });
     });
     
     // check for analysis origin update
-    analysis.on('change:dimensions', function(data) {
+    analysis.on('change:dimensions', function() {
         squid_api.controller.analysisjob.compute(analysis);
     });
+    
+    /*
+    analysis.on('change:results', function(data) {
+        var rows = analysis.get("results").rows.slice(0,10);
+        var tr = d3.select("#analysis").append("table").classed({"sq-table":true}).selectAll("tr")
+        .data(rows)
+        .enter().append("tr");
+
+        var td = tr.selectAll("td")
+        .data(function(d) { 
+            return d.v; 
+        })
+        .enter().append("td")
+        .text(function(d) { 
+            return d; 
+        });
+    });
+    */
     
     /*
      * Start the App
